@@ -1,5 +1,5 @@
 # Skript jezici 2024
 
-Ime i prezime: XXXXX
+Ime i prezime: Danilo Radovic
 
-Broj indeksa:  XXXXX
+Broj indeksa:  63/22 RN
