@@ -74,7 +74,8 @@ function loadResults(json_resp) {
 function loadObjects() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, objectIds.length);
-    document.getElementById('exhibits').innerHTM = '';
+    const exhibits = document.getElementById(`exhibits`);
+    exhibits.innerHTML = '';
 
     for (let i = startIndex; i < endIndex; i++) {
         let id = objectIds[i];
@@ -82,15 +83,17 @@ function loadObjects() {
             .then(response => response.json())
             .then(artwork => {
                 const exhibitHtml = `
-                <a href="exhibit.html?id=${id}" class="card" style="text-decoration: none;">
+                <div class="col-6 col-md-2">
+                <a href="exhibit.html?id=${id}" class="card m-2" style="text-decoration: none;">
                      <div class="imgbox">
                         <img src="${artwork.primaryImageSmall || 'img/placeholder.png'}" class="center-fit">
                     </div>
                     <div class="card-body">
                          <h5 class="card-title">${artwork.title || 'No Title'}</h5>
                     </div>
-                 </a>`;
-                document.getElementById('exhibits').innerHTML += exhibitHtml;
+                 </a>
+                 </div>`;
+                exhibits.innerHTML += exhibitHtml;
             });
     }
     loadPagination();
@@ -102,8 +105,8 @@ function loadPagination() {
 
     for (let i = 1; i <= pageCount; i++) {
         paginationElement.innerHTML += `
-        <li class="page-item text-light ${currentPage === i ? 'active' : ''} " data-bs-theme="dark">
-            <a class="page-link text-light" data-bs-theme="dark" href="#" onclick="changePage(${i})>${i}</a>
+        <li class="page-item  ${currentPage === i ? 'active' : ''}">
+            <a class="page-link " href="#" onclick="changePage(${i})">${i}</a>
         </li>`
     }
 }
