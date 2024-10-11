@@ -11,12 +11,10 @@ function loadDepartments() {
                 let id = department.departmentId;
                 let name = department.displayName;
 
-                let dept_nav_html = `
+                document.getElementById(`depts_nav`).innerHTML += `
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="search.html?deptId=${id}&deptName=${name}" tag="dept${id}">${name}</a>
                     </li>`;
-
-                document.getElementById('depts_nav').innerHTML += dept_nav_html;
             });
         });
 }
@@ -74,37 +72,36 @@ function loadResults(json_resp) {
 function loadObjects() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, objectIds.length);
-    const exhibits = document.getElementById(`exhibits`);
-    exhibits.innerHTML = '';
+    const exhibitsInnerHTML = document.getElementById(`exhibits`).innerHTML;
+    exhibitsInnerHTML = '';
 
     for (let i = startIndex; i < endIndex; i++) {
         let id = objectIds[i];
         fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`)
             .then(response => response.json())
-            .then(artwork => {
-                const exhibitHtml = `
+            .then(json_resp => {
+                exhibitsInnerHTML += `
                 <div class="col-6 col-md-2">
                 <a href="exhibit.html?id=${id}" class="card m-2" style="text-decoration: none;">
                      <div class="imgbox">
-                        <img src="${artwork.primaryImageSmall || 'img/placeholder.png'}" class="center-fit">
+                        <img src="${json_resp.primaryImageSmall || 'img/placeholder.png'}" class="center-fit">
                     </div>
                     <div class="card-body">
-                         <h5 class="card-title">${artwork.title || 'No Title'}</h5>
+                         <h5 class="card-title">${json_resp.title || 'No Title'}</h5>
                     </div>
                  </a>
                  </div>`;
-                exhibits.innerHTML += exhibitHtml;
             });
     }
     loadPagination();
 }
 
 function loadPagination() {
-    const paginationElement = document.getElementById('exhibit_pegination');
-    paginationElement.innerHTML = '';
+    const paginationInnerHTML = document.getElementById('exhibit_pegination').innerHTML;
+    paginationInnerHTML = '';
 
     for (let i = 1; i <= pageCount; i++) {
-        paginationElement.innerHTML += `
+        paginationInnerHTML += `
         <li class="page-item  ${currentPage === i ? 'active' : ''}">
             <a class="page-link " href="#" onclick="changePage(${i})">${i}</a>
         </li>`

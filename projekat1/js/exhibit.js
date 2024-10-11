@@ -11,12 +11,10 @@ function loadDepartments() {
                 let id = department.departmentId;
                 let name = department.displayName;
 
-                let dept_nav_html = `
+                document.getElementById(`depts_nav`).innerHTML += `
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="search.html?deptId=${id}&deptName=${name}" tag="dept${id}">${name}</a>
                     </li>`;
-
-                document.getElementById('depts_nav').innerHTML += dept_nav_html;
             });
         });
 }
@@ -28,15 +26,17 @@ function loadExhibit() {
 
     fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`)
         .then(response => response.json())
-        .then(artwork => {
-            document.getElementById("image").src = artwork.primaryImageSmall || `img/placeholder.png`;
-            const listAttr = document.getElementById("attr_list");
-            listAttr.innerHTML = "";
-            listAttr.innerHTML += `<li class="list - group - item text-light">title: ${artwork.title}</li>`;
-            listAttr.innerHTML += `<li class="list - group - item text-light">Name: ${artwork.objectName}</li>`;
-            listAttr.innerHTML += `<li class="list - group - item text-light">ID: ${artwork.objectID}</li>`;
-            listAttr.innerHTML += `<li class="list - group - item text-light">department: ${artwork.department}</li>`;
-            listAttr.innerHTML += `<li class="list - group - item text-light">Highlighted: ${artwork.isHighlight}</li>`;
-            listAttr.innerHTML += `<li class="list - group - item text-light">public domain: ${artwork.isPublicDomain}</li>`;
+        .then(json_resp => {
+            document.getElementById("image").src = json_resp.primaryImageSmall || `img/placeholder.png`;
+
+            const listAttrInnerHTML = document.getElementById("attr_list").innerHTML;
+            listAttrInnerHTML = "";
+
+            listAttrInnerHTML += `<li class="list - group - item text-light">title: ${json_resp.title}</li>`;
+            listAttrInnerHTML += `<li class="list - group - item text-light">Name: ${json_resp.objectName}</li>`;
+            listAttrInnerHTML += `<li class="list - group - item text-light">ID: ${json_resp.objectID}</li>`;
+            listAttrInnerHTML += `<li class="list - group - item text-light">department: ${json_resp.department}</li>`;
+            listAttrInnerHTML += `<li class="list - group - item text-light">Highlighted: ${json_resp.isHighlight}</li>`;
+            listAttrInnerHTML += `<li class="list - group - item text-light">public domain: ${json_resp.isPublicDomain}</li>`;
         });
 }
