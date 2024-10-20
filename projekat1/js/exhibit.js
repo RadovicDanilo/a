@@ -29,14 +29,13 @@ function loadExhibit() {
         .then(json_resp => {
             document.getElementById("image").src = json_resp.primaryImageSmall || `img/placeholder.png`;
 
-            const listAttrInnerHTML = document.getElementById("attr_list").innerHTML;
-            listAttrInnerHTML = "";
+            document.getElementById("attr_list").innerHTML = ``;
 
-            listAttrInnerHTML += `<li class="list - group - item text-light">title: ${json_resp.title}</li>`;
-            listAttrInnerHTML += `<li class="list - group - item text-light">Name: ${json_resp.objectName}</li>`;
-            listAttrInnerHTML += `<li class="list - group - item text-light">ID: ${json_resp.objectID}</li>`;
-            listAttrInnerHTML += `<li class="list - group - item text-light">department: ${json_resp.department}</li>`;
-            listAttrInnerHTML += `<li class="list - group - item text-light">Highlighted: ${json_resp.isHighlight}</li>`;
-            listAttrInnerHTML += `<li class="list - group - item text-light">public domain: ${json_resp.isPublicDomain}</li>`;
+            document.getElementById("attr_list").innerHTML += `<li class="list-group-item text-light">title: ${json_resp.title}</li>`;
+            document.getElementById("attr_list").innerHTML += `<li class="list-group-item text-light">Name: ${json_resp.objectName}</li>`;
+            document.getElementById("attr_list").innerHTML += `<li class="list-group-item text-light">ID: ${json_resp.objectID}</li>`;
+            document.getElementById("attr_list").innerHTML += `<li class="list-group-item text-light">department: ${json_resp.department}</li>`;
+            document.getElementById("attr_list").innerHTML += `<li class="list-group-item text-light">Highlighted: ${json_resp.isHighlight}</li>`;
+            document.getElementById("attr_list").innerHTML += `<li class="list-group-item text-light">public domain: ${json_resp.isPublicDomain}</li>`;
         });
 }

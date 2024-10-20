@@ -8,8 +8,8 @@ function loadDepartments() {
         .then(response => response.json())
         .then(json_resp => {
             json_resp.departments.forEach(department => {
-                let id = department.departmentId;
-                let name = department.displayName;
+                const id = department.departmentId;
+                const name = department.displayName;
 
                 document.getElementById(`depts_nav`).innerHTML += `
                     <li class="nav-item">
@@ -72,24 +72,23 @@ function loadResults(json_resp) {
 function loadObjects() {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = Math.min(startIndex + itemsPerPage, objectIds.length);
-    const exhibitsInnerHTML = document.getElementById(`exhibits`).innerHTML;
-    exhibitsInnerHTML = '';
+    document.getElementById(`exhibits`).innerHTML = ``;
 
     for (let i = startIndex; i < endIndex; i++) {
         let id = objectIds[i];
         fetch(`https://collectionapi.metmuseum.org/public/collection/v1/objects/${id}`)
             .then(response => response.json())
             .then(json_resp => {
-                exhibitsInnerHTML += `
+            document.getElementById(`exhibits`).innerHTML += `
                 <div class="col-6 col-md-2">
-                <a href="exhibit.html?id=${id}" class="card m-2" style="text-decoration: none;">
-                     <div class="imgbox">
-                        <img src="${json_resp.primaryImageSmall || 'img/placeholder.png'}" class="center-fit">
-                    </div>
-                    <div class="card-body">
-                         <h5 class="card-title">${json_resp.title || 'No Title'}</h5>
-                    </div>
-                 </a>
+                    <a href="exhibit.html?id=${id}" class="card m-2" style="text-decoration: none;">
+                         <div class="imgbox">
+                            <img src="${json_resp.primaryImageSmall || 'img/placeholder.png'}" class="center-fit">
+                        </div>
+                        <div class="card-body">
+                             <h5 class="card-title">${json_resp.title || 'No Title'}</h5>
+                        </div>
+                    </a>
                  </div>`;
             });
     }
@@ -97,11 +96,10 @@ function loadObjects() {
 }
 
 function loadPagination() {
-    const paginationInnerHTML = document.getElementById('exhibit_pegination').innerHTML;
-    paginationInnerHTML = '';
+    document.getElementById('exhibit_pegination').innerHTML = ``;
 
     for (let i = 1; i <= pageCount; i++) {
-        paginationInnerHTML += `
+        document.getElementById('exhibit_pegination').innerHTML += `
         <li class="page-item  ${currentPage === i ? 'active' : ''}">
             <a class="page-link " href="#" onclick="changePage(${i})">${i}</a>
         </li>`
