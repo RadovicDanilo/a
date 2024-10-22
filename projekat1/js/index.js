@@ -10,10 +10,12 @@ function loadDepartments() {
                 let id = department.departmentId;
                 let name = department.displayName;
 
-                document.getElementById(`depts_nav`).innerHTML += `
+                let dept_nav_html = `
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="search.html?deptId=${id}&deptName=${name}" tag="dept${id}">${name}</a>
                     </li>`;
+
+                document.getElementById('depts_nav').innerHTML += dept_nav_html;
             });
         });
 }
