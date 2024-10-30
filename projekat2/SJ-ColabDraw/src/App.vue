@@ -1,10 +1,13 @@
 <template>
-  <Navbar />
-  <div class="content">
+<Navbar />
+ <div class="content">
     <RouterView />
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
 
-<style scoped></style>
+</script>
+
+<style scoped>
+</style>

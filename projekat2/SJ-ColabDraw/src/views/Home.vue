@@ -1,11 +1,14 @@
 <template>
   <Header title="ColabDraw" />
-  <p>ColabDraw - Colaborative pixel art platform</p>
+    <p>ColabDraw - Colaborative pixel art platform</p>
 </template>
 
+
 <script setup lang="ts">
-import { ref } from 'vue';
-import Header from '@/components/Header.vue';
+  import { ref } from 'vue'
+  import Header from '@/components/Header.vue'
 </script>
 
-<style scoped></style>
+<style scoped>
+
+</style>
