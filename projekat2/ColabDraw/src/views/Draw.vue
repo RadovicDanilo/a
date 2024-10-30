@@ -1,24 +1,8 @@
 <template>
-  <div class="drawing-app">
-    <Tools @colorSelected="setCurrentColor" />
-    <Canvas :currentColor="currentColor" />
-  </div>
+  <Canvas />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import Tools from '@/components/Tools.vue';
-import Canvas from '@/components/Canvas.vue';
-
-const currentColor = ref('black'); 
-
-const setCurrentColor = (color: string) => {
-  currentColor.value = color;
-};
+import Canvas from "@/components/Canvas.vue";
 </script>
-
-<style scoped>
-.drawing-app {
-  display: flex;
-}
-</style>
+<style scoped></style>

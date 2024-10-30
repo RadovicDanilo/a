@@ -18,8 +18,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import ColorPicker from "./ColorPicker.vue";
+import { defineEmits, ref } from "vue";
+import ColorPicker from "@/components/ColorPicker.vue";
+
+const emit = defineEmits<{
+  (e: "colorSelected", color: string): void;
+}>();
 
 const currentTool = ref("brush");
 const currentColor = ref("#ff8a65");
@@ -36,6 +40,7 @@ const openColorPicker = () => {
 const updateColor = (newColor: string) => {
   currentColor.value = newColor;
   showColorPicker.value = false;
+  emit("colorSelected", newColor);
 };
 </script>
 

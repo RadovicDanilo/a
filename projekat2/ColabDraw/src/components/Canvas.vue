@@ -1,26 +1,35 @@
 <template>
-  <div
-    class="canvas"
-    @mousedown="startDrawing"
-    @mouseup="stopDrawing"
-    @mouseleave="stopDrawing"
-  >
+  <div class="drawing-app">
+    <Tools @colorSelected="updateColor"/>
     <div
-      v-for="(pixel, index) in pixels"
-      :key="index"
-      class="pixel"
-      :style="{ backgroundColor: pixel.color }"
-      @mouseover="draw(index)"
-      @click="selectPixel(index)"
-    ></div>
+      class="canvas"
+      @mousedown="startDrawing"
+      @mouseup="stopDrawing"
+      @mouseleave="stopDrawing"
+    >
+      <div
+        v-for="(pixel, index) in pixels"
+        :key="index"
+        class="pixel"
+        :style="{ backgroundColor: pixel.color }"
+        @mouseover="draw(index)"
+        @click="selectPixel(index)"
+      ></div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
+import Tools from "@/components/Tools.vue"
 
 const pixels = ref(Array(2500).fill({ color: "white" }));
 let isDrawing = false;
+const currentColor = ref("#ff8a65");
+
+const updateColor = (newColor: string) => {
+  currentColor.value = newColor;
+};
 
 const startDrawing = () => {
   isDrawing = true;
@@ -32,12 +41,12 @@ const stopDrawing = () => {
 
 const draw = (index: number) => {
   if (isDrawing) {
-    pixels.value[index] = { color: "currentColor" };
+    pixels.value[index] = { color: currentColor };
   }
 };
 
 const selectPixel = (index: number) => {
-  pixels.value[index] = { color: "currentColor" };
+  pixels.value[index] = { color: currentColor };
 };
 </script>
 
@@ -56,5 +65,8 @@ const selectPixel = (index: number) => {
   width: 20px;
   height: 20px;
   border: 0.1px solid #ddd;
+}
+.drawing-app {
+  display: flex;
 }
 </style>
