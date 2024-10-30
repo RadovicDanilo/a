@@ -1,9 +1,10 @@
+<template>
+  <Header title="ColabDraw"></Header>
+  <p>ColabDraw - Colaborative pixel art platform</p>
+</template>
+
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import Header from '@/components/Header.vue';
 </script>
 
-<template>
-  <main>
-    <TheWelcome />
-  </main>
-</template>
+<style scoped></style>
