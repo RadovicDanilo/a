@@ -1,10 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/HomeView.vue";
-import Login from "../views/LoginView.vue";
-import Register from "../views/RegisterView.vue";
-import Gallery from "../views/GalleryView.vue";
-import Image from "../views/ImageView.vue";
-import Drawing from "../views/DrawingView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

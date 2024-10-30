@@ -17,7 +17,7 @@ import Header from "@/components/Header.vue";
   justify-content: center;
   padding: 20px;
   background-color: #f9f9f9;
-  min-height: calc(100vh - 50px); 
+  min-height: calc(100vh - 50px);
   font-family: "Arial", sans-serif;
 }
 
