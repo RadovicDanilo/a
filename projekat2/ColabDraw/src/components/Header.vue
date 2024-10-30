@@ -12,11 +12,18 @@ defineProps<{
 
 <style scoped>
 .header {
-  background-color: black;
+  background-color: #222;
   color: #ff8a65;
-  padding: 1rem;
+  padding: 1.5rem;
   text-align: center;
-  border-bottom: dotted 3px #ffccbc;
+  border-bottom: 3px dotted #ffccbc;
   width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-family: 'Arial', sans-serif;
 }
 </style>
