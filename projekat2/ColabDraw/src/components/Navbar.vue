@@ -1,15 +1,15 @@
 <template>
   <nav>
     <RouterLink :to="{ name: 'home' }">Home</RouterLink>
-    <RouterLink :to="{ name: 'gallery' }">Gallery</RouterLink>
-    <RouterLink :to="{ name: 'drawing' }">Draw</RouterLink>
+    <RouterLink :to="{ name: 'gallery' }">Draw</RouterLink>
+    <RouterLink :to="{ name: 'draw' }">Draw</RouterLink>
     <RouterLink :to="{ name: 'register' }">Register</RouterLink>
     <RouterLink :to="{ name: 'login' }">Login</RouterLink>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
+import { RouterLink } from "vue-router";
 </script>
 
 <style scoped>

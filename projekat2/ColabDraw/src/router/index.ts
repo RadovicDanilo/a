@@ -1,5 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/HomeView.vue";
+import Register from "../views/ViewRegister.vue";
+import Login from "../views/ViewLogin.vue";
+import Image from "../views/Image.vue";
+import Gallery from "../views/Gallery.vue";
+import Draw from "../views/Draw.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,9 +35,9 @@ const router = createRouter({
       component: Image,
     },
     {
-      path: "/draw/:id",
-      name: "drawing",
-      component: Drawing,
+      path: "/draw/",
+      name: "draw",
+      component: Draw,
     },
   ],
 });
