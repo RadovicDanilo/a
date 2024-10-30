@@ -1,6 +1,6 @@
 <template>
   <div class="drawing-app">
-    <Tools @colorSelected="updateColor"/>
+    <Tools @colorSelected="updateColor" />
     <div
       class="canvas"
       @mousedown="startDrawing"
@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import Tools from "@/components/Tools.vue"
+import Tools from "@/components/Tools.vue";
 
 const pixels = ref(Array(2500).fill({ color: "white" }));
 let isDrawing = false;
@@ -40,13 +40,15 @@ const stopDrawing = () => {
 };
 
 const draw = (index: number) => {
+  const colorToUse = currentColor.value;
   if (isDrawing) {
-    pixels.value[index] = { color: currentColor };
+    pixels.value[index] = { color: colorToUse };
   }
 };
 
 const selectPixel = (index: number) => {
-  pixels.value[index] = { color: currentColor };
+  const colorToUse = currentColor.value;
+  pixels.value[index] = { color: colorToUse };
 };
 </script>
 
