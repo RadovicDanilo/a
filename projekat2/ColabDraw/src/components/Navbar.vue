@@ -1,7 +1,7 @@
 <template>
   <nav>
     <RouterLink :to="{ name: 'home' }">Home</RouterLink>
-    <RouterLink :to="{ name: 'gallery' }">Draw</RouterLink>
+    <RouterLink :to="{ name: 'gallery' }">Gallery</RouterLink>
     <RouterLink :to="{ name: 'draw' }">Draw</RouterLink>
     <RouterLink :to="{ name: 'register' }">Register</RouterLink>
     <RouterLink :to="{ name: 'login' }">Login</RouterLink>
