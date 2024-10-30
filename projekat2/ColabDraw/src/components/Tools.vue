@@ -5,7 +5,7 @@
       @click="selectTool('brush')"
       :class="{ selected: currentTool === 'brush' }"
     >
-      <span>Brush (DODAJ IKONU)</span>
+      <span>Brush</span>
     </div>
     <div class="tool" @click="openColorPicker">
       <div
