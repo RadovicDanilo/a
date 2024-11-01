@@ -65,7 +65,6 @@ const selectPixel = (index: number) => {
   height: 250px;
   border: 2px solid #ccc;
   background-color: white;
-  color-scheme: light;
 }
 
 .pixel {

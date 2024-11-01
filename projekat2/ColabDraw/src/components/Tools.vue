@@ -71,6 +71,5 @@ const updateColor = (newColor: string) => {
   width: 30px;
   height: 30px;
   border: 1px solid #ccc;
-   color-scheme: light;
 }
 </style>
