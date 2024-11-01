@@ -3,6 +3,7 @@ import { createPinia } from "pinia";
 
 import App from "./App.vue";
 import router from "./router";
+import "@mdi/font/css/materialdesignicons.css";
 import DarkReader from "darkreader";
 
 const app = createApp(App);
@@ -20,15 +21,7 @@ DarkReader.auto(
   },
   {
     invert: [],
-    ignoreInlineStyle: [
-      ".drawing-app",
-      ".pixel",
-      ".color-swatch",
-      ".canvas",
-      ".color-picker",
-      ".tools",
-      ".color-display",
-    ],
+    ignoreInlineStyle: [".canvas"],
     css: "",
     ignoreImageAnalysis: [],
     disableStyleSheetsProxy: false,

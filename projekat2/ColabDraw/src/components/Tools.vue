@@ -5,7 +5,7 @@
       @click="selectTool('brush')"
       :class="{ selected: currentTool === 'brush' }"
     >
-      <span>Brush</span>
+      <span class="mdi mdi-brush"></span>
     </div>
     <input
       type="color"

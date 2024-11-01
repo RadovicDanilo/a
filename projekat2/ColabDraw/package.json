@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "darkreader": "^4.9.96",
     "pinia": "^2.2.4",
     "vue": "^3.5.12",
