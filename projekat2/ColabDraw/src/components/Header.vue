@@ -13,7 +13,7 @@ defineProps<{
 <style scoped>
 .header {
   background-color: #222;
-  color: #ff8a65;
+  color: #ffffff;
   padding: 1.5rem;
   text-align: center;
   border-bottom: 3px dotted #ffccbc;

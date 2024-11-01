@@ -26,7 +26,7 @@ const emit = defineEmits<{
 }>();
 
 const currentTool = ref("brush");
-const currentColor = ref("#ff8a65");
+const currentColor = ref("#000000");
 const showColorPicker = ref(false);
 
 const selectTool = (tool: string) => {
@@ -64,12 +64,13 @@ const updateColor = (newColor: string) => {
 }
 
 .selected {
-  border-color: #ff8a65;
+  border-color: #ffffff;
 }
 
 .color-display {
   width: 30px;
   height: 30px;
   border: 1px solid #ccc;
+   color-scheme: light;
 }
 </style>

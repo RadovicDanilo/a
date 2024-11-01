@@ -1,10 +1,12 @@
 <template>
   <nav>
-    <RouterLink :to="{ name: 'home' }">Home</RouterLink>
-    <RouterLink :to="{ name: 'gallery' }">Gallery</RouterLink>
-    <RouterLink :to="{ name: 'draw' }">Draw</RouterLink>
-    <RouterLink :to="{ name: 'register' }">Register</RouterLink>
-    <RouterLink :to="{ name: 'login' }">Login</RouterLink>
+    <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
+    <RouterLink :to="{ name: 'gallery' }" class="nav-link">Gallery</RouterLink>
+    <RouterLink :to="{ name: 'draw' }" class="nav-link">Draw</RouterLink>
+    <RouterLink :to="{ name: 'register' }" class="nav-link"
+      >Register</RouterLink
+    >
+    <RouterLink :to="{ name: 'login' }" class="nav-link">Login</RouterLink>
   </nav>
 </template>
 
@@ -14,26 +16,19 @@ import { RouterLink } from "vue-router";
 
 <style scoped>
 nav {
-  background-color: #333;
-  color: #ff8a65;
+  background-color: #f5f5f5;
+  color: #333;
   padding: 1rem;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  border-bottom: 3px dotted #ffccbc;
 }
 
 .nav-link {
-  color: #ffccbc;
+  color: #111111;
   text-decoration: none;
   padding: 0.5rem 1rem;
   font-weight: bold;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.nav-link:hover {
-  background-color: #555;
-  color: #fff;
+  border-radius: 3px;
 }
 </style>

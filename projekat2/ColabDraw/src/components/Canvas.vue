@@ -6,6 +6,7 @@
       @mousedown="startDrawing"
       @mouseup="stopDrawing"
       @mouseleave="stopDrawing"
+      draggable="false"
     >
       <div
         v-for="(pixel, index) in pixels"
@@ -14,6 +15,7 @@
         :style="{ backgroundColor: pixel.color }"
         @mouseover="draw(index)"
         @click="selectPixel(index)"
+        draggable="false"
       ></div>
     </div>
   </div>
@@ -25,7 +27,7 @@ import Tools from "@/components/Tools.vue";
 
 const pixels = ref(Array(2500).fill({ color: "white" }));
 let isDrawing = false;
-const currentColor = ref("#ff8a65");
+const currentColor = ref("#000000");
 
 const updateColor = (newColor: string) => {
   currentColor.value = newColor;
@@ -54,6 +56,8 @@ const selectPixel = (index: number) => {
 
 <style scoped>
 .canvas {
+  user-select: none;
+  pointer-events: none;
   display: grid;
   grid-template-columns: repeat(50, 1fr);
   grid-template-rows: repeat(50, 1fr);
@@ -61,12 +65,14 @@ const selectPixel = (index: number) => {
   height: 250px;
   border: 2px solid #ccc;
   background-color: white;
+  color-scheme: light;
 }
 
 .pixel {
   width: 20px;
   height: 20px;
   border: 0.1px solid #ddd;
+  pointer-events: all;
 }
 .drawing-app {
   display: flex;
