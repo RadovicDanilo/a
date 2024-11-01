@@ -7,19 +7,16 @@
     >
       <span>Brush</span>
     </div>
-    <div class="tool" @click="openColorPicker">
-      <div
-        class="color-display"
-        :style="{ backgroundColor: currentColor }"
-      ></div>
-    </div>
-    <ColorPicker v-if="showColorPicker" @colorSelected="updateColor" />
+    <input
+      type="color"
+      v-model="currentColor"
+      @input="updateColor(currentColor)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { defineEmits, ref } from "vue";
-import ColorPicker from "@/components/ColorPicker.vue";
 
 const emit = defineEmits<{
   (e: "colorSelected", color: string): void;
@@ -27,19 +24,12 @@ const emit = defineEmits<{
 
 const currentTool = ref("brush");
 const currentColor = ref("#000000");
-const showColorPicker = ref(false);
 
 const selectTool = (tool: string) => {
   currentTool.value = tool;
 };
 
-const openColorPicker = () => {
-  showColorPicker.value = !showColorPicker.value;
-};
-
 const updateColor = (newColor: string) => {
-  currentColor.value = newColor;
-  showColorPicker.value = false;
   emit("colorSelected", newColor);
 };
 </script>
@@ -65,11 +55,5 @@ const updateColor = (newColor: string) => {
 
 .selected {
   border-color: #ffffff;
-}
-
-.color-display {
-  width: 30px;
-  height: 30px;
-  border: 1px solid #ccc;
 }
 </style>
