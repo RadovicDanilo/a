@@ -1,11 +1,9 @@
 <template>
   <div>
-    <h1>Test Component</h1>
+    <h1>Register</h1>
   </div>
 </template>
 
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
-<style scoped>
-</style>
+<style scoped></style>

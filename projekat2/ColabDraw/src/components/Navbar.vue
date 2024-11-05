@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <div >
+    <div>
       <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
       <RouterLink :to="{ name: 'gallery' }" class="nav-link"
         >Gallery</RouterLink
@@ -27,7 +27,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 4px solid #b6b6b6a0
+  border-bottom: 4px solid #b6b6b6a0;
 }
 
 .nav-link {
