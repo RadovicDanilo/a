@@ -21,8 +21,8 @@ DarkReader.auto(
   },
   {
     invert: [],
-    ignoreInlineStyle: [".canvas"],
-    css: "",
+    ignoreInlineStyle: [".pixel"],
+    css: ".pixel",
     ignoreImageAnalysis: [],
     disableStyleSheetsProxy: false,
   }
