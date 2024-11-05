@@ -1,15 +1,18 @@
 <template>
   <div class="tools">
-    <div
-      class="tool"
-      @click="selectTool('brush')"
-      :class="{ selected: currentTool === 'brush' }"
-    >
-      <span class="mdi mdi-brush"></span>
+    <div v-for="tool in tools">
+      <div
+        class="tool"
+        @click="selectTool(tool[0])"
+        :class="{ selected: currentTool === tool[0] }"
+      >
+        <span :class="['mdi', tool[1], 'tool-icon']"></span>
+      </div>
     </div>
     <input
       type="color"
       v-model="currentColor"
+      class="color-picker"
       @input="updateColor(currentColor)"
     />
   </div>
@@ -21,6 +24,13 @@ import { defineEmits, ref } from "vue";
 const emit = defineEmits<{
   (e: "colorSelected", color: string): void;
 }>();
+
+type Tool = [name: string, icon: string];
+
+const tools: Tool[] = [
+  ["brush", "mdi-brush"],
+  ["eraser", "mdi-eraser"],
+];
 
 const currentTool = ref("brush");
 const currentColor = ref("#000000");
@@ -39,6 +49,7 @@ const updateColor = (newColor: string) => {
   display: flex;
   flex-direction: column;
   margin: 10px;
+  align-items: center;
 }
 
 .tool {
@@ -47,6 +58,12 @@ const updateColor = (newColor: string) => {
   cursor: pointer;
   border: 1px solid transparent;
   transition: background-color 0.3s;
+  height: fit-content;
+  width: fit-content;
+}
+
+.tool-icon {
+  font-size: 40px;
 }
 
 .tool:hover {
@@ -55,5 +72,15 @@ const updateColor = (newColor: string) => {
 
 .selected {
   border-color: #ffffff;
+}
+
+.color-picker {
+  margin: 5px;
+  padding: 10px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.3s;
+  height: 70px;
+  width: 70px;
 }
 </style>

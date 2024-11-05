@@ -73,7 +73,9 @@ const selectPixel = (index: number) => {
   border: 0.1px solid #ddd;
   pointer-events: all;
 }
+
 .drawing-app {
   display: flex;
+  align-items: cente;
 }
 </style>
