@@ -1,6 +1,6 @@
 <template>
   <div class="drawing-app">
-    <Tools @colorSelected="updateColor" />
+    <Tools @colorSelected="updateColor" @toolSelected="updateTool" />
     <div
       class="canvas"
       @mousedown="startDrawing"
@@ -14,7 +14,7 @@
         class="pixel"
         :style="{ backgroundColor: pixel.color }"
         @mouseover="draw(index)"
-        @click="selectPixel(index)"
+        @click="clickPixel(index)"
         draggable="false"
       ></div>
     </div>
@@ -26,6 +26,13 @@ import { ref } from "vue";
 import Tools from "@/components/Tools.vue";
 
 const pixels = ref(Array(2500).fill({ color: "white" }));
+
+let currentTool = ref("brush");
+
+const updateTool = (tool: string) => {
+  currentTool.value = tool;
+};
+
 let isDrawing = false;
 const currentColor = ref("#000000");
 
@@ -42,40 +49,46 @@ const stopDrawing = () => {
 };
 
 const draw = (index: number) => {
-  const colorToUse = currentColor.value;
-  if (isDrawing) {
-    pixels.value[index] = { color: colorToUse };
-  }
+  if (isDrawing) clickPixel(index);
 };
 
-const selectPixel = (index: number) => {
-  const colorToUse = currentColor.value;
-  pixels.value[index] = { color: colorToUse };
+const clickPixel = (index: number) => {
+  if (currentTool.value === "brush") {
+    const colorToUse = currentColor.value;
+    pixels.value[index] = { color: colorToUse };
+  } else if (currentTool.value === "eraser") {
+    pixels.value[index] = { color: "#FFFFFF" };
+  }
 };
 </script>
 
 <style scoped>
+.drawing-app {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.tools {
+  position: absolute;
+  left: 20px;
+}
+
 .canvas {
   user-select: none;
-  pointer-events: none;
   display: grid;
   grid-template-columns: repeat(50, 1fr);
   grid-template-rows: repeat(50, 1fr);
-  width: 250px;
-  height: 250px;
-  border: 2px solid #ccc;
-  background-color: white;
+  width: fit-content;
+  height: fit-content;
+  border: 2px solid #000000;
 }
 
 .pixel {
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   border: 0.1px solid #ddd;
-  pointer-events: all;
-}
-
-.drawing-app {
-  display: flex;
-  align-items: cente;
 }
 </style>

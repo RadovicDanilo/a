@@ -23,6 +23,7 @@ import { defineEmits, ref } from "vue";
 
 const emit = defineEmits<{
   (e: "colorSelected", color: string): void;
+  (e: "toolSelected", tool: string): void;
 }>();
 
 type Tool = [name: string, icon: string];
@@ -37,6 +38,7 @@ const currentColor = ref("#000000");
 
 const selectTool = (tool: string) => {
   currentTool.value = tool;
+  emit("toolSelected", tool);
 };
 
 const updateColor = (newColor: string) => {
@@ -63,7 +65,7 @@ const updateColor = (newColor: string) => {
 }
 
 .tool-icon {
-  font-size: 40px;
+  font-size: 30px;
 }
 
 .tool:hover {
@@ -71,7 +73,7 @@ const updateColor = (newColor: string) => {
 }
 
 .selected {
-  border-color: #ffffff;
+  border-color: #000000;
 }
 
 .color-picker {
