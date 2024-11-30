@@ -25,7 +25,7 @@
 import { ref } from "vue";
 import Tools from "@/components/Tools.vue";
 
-const pixels = ref(Array(2500).fill({ color: "white" }));
+const pixels = ref(Array(144).fill({ color: "white" }));
 
 let currentTool = ref("brush");
 
@@ -79,16 +79,22 @@ const clickPixel = (index: number) => {
 .canvas {
   user-select: none;
   display: grid;
-  grid-template-columns: repeat(50, 1fr);
-  grid-template-rows: repeat(50, 1fr);
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: repeat(12, 1fr);
   width: fit-content;
   height: fit-content;
   border: 2px solid #000000;
 }
 
 .pixel {
-  width: 12px;
-  height: 12px;
+  width: 36px;
+  height: 36px;
   border: 0.1px solid #ddd;
+  transition: background-color 0.3s ease;
+}
+
+.pixel:hover{
+  opacity: 0.9;
+  background-color: lightgray;
 }
 </style>
