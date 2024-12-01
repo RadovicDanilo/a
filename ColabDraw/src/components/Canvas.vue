@@ -6,20 +6,16 @@
         <div class="tool" @click="save">
           <i class="mdi mdi-content-save tool-icon"></i>
         </div>
-
         <div class="tool" @click="decreaseCanvasSize">
           <i class="mdi mdi-minus tool-icon"></i>
         </div>
-
         <span class="canvas-size"> {{ pixels.length }}</span>
-
         <div class="tool" @click="increaseCanvasSize">
           <i class="mdi mdi-plus tool-icon"></i>
         </div>
       </div>
-
       <div class="canvas" :style="{
-        gridTemplateColumns: `repeat(${pixels[0]?.length}, 1fr)`,
+        gridTemplateColumns: `repeat(${pixels.length}, 1fr)`,
         gridTemplateRows: `repeat(${pixels.length}, 1fr)`
       }" @mousedown="startDrawing" @mouseup="stopDrawing" @mouseleave="stopDrawing" draggable="false">
         <div v-for="(row, rowIndex) in pixels" :key="rowIndex" class="pixel-row">
@@ -103,29 +99,66 @@ const decreaseCanvasSize = () => {
 
 const save = () => {
   //TODO: implement
-}
+}  
 </script>
 
 <style scoped>
 .drawing-app {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  height: 100v;
   padding: 20px;
+  gap: 20px;
+  box-sizing: border-box;
 }
 
 .tools {
   position: absolute;
-  left: 20px;
+  left: 0;
+  top: 30%;
+  left: 30px;
+}
+
+.horizontalTools {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 10px;
+  position: sticky;
+  padding: 32px;
+  padding-bottom: 34px;
+}
+
+.tool {
+  padding: 8px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background-color 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tool-icon {
+  font-size: 30px;
+}
+
+.tool:hover {
+  background-color: #eee;
 }
 
 .canvas {
   user-select: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 1fr);
-  grid-template-rows: repeat(auto-fill, 1fr);
+  display: flex;
   border: 2px solid #000000;
+  flex-grow: 1;
+  width: fit-content;
+  height: fit-content;
+  overflow: hidden;
 }
 
 .pixel {
@@ -140,28 +173,8 @@ const save = () => {
   background-color: lightgray;
 }
 
-.tool {
-  margin: 5px;
-  padding: 10px;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: background-color 0.3s;
-  height: fit-content;
-  width: fit-content;
-}
-
-.tool-icon {
-  font-size: 30px;
-}
-
-.tool:hover {
-  background-color: #eee;
-}
-
-.horizontalTools {
-  display: flex;
-  flex-direction: row;
-  margin: 10px;
-  align-items: center;
+.canvas-size {
+  font-weight: bold;
+  font-size: 18px;
 }
 </style>
