@@ -21,12 +21,12 @@
     "lodash": "^4.17.21",
     "pinia": "^2.2.4",
     "tailwindcss": "^3.4.15",
-    "vee-validate": "^4.14.7",
+    "vee-validate": "^4.5.8",
     "vue": "^3.5.12",
     "vue-router": "^4.4.5",
     "vue-toastification": "^2.0.0-rc.5",
     "vue3-pagination": "^1.0.16",
-    "vuetify": "^3.7.4",
+    "vuetify": "^3.7.0-beta.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {
