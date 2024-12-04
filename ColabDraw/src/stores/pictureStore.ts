@@ -1,6 +1,7 @@
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import axios from "axios";
 import { find, filter } from "lodash";
+import { useAuthStore } from "@/stores/authStore";
 import type {
   BasePictureDto,
   PictureDto,
@@ -9,6 +10,19 @@ import type {
 } from "@/types/pictures";
 
 const API_BASE_URL = "https://raf-pixeldraw.aarsen.me/api";
+
+const authStore = useAuthStore();
+const { token } = storeToRefs(authStore);
+
+axios.interceptors.request.use((config) => {
+  if (token.value) {
+    config.headers.Authorization = `Bearer ${token.value}`;
+  }
+  return config;
+}, (error) => {
+  return Promise.reject(error);
+});
+
 
 export const usePictureStore = defineStore({
   id: "pictures",
