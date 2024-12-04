@@ -43,7 +43,7 @@ export default defineComponent({
         username: values.username,
         password: values.password
       }
-      const success = authStore.login(loginReq);
+      const success = await authStore.login(loginReq);
       if (!success) {
         return;
       }
