@@ -2,6 +2,7 @@ import { defineStore, storeToRefs } from "pinia";
 import axios from "axios";
 import { find, filter } from "lodash";
 import { useAuthStore } from "@/stores/authStore";
+import { useToast } from "vue-toastification"
 import type {
   BasePictureDto,
   PictureDto,
@@ -23,6 +24,42 @@ axios.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+const toast = useToast()
+
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const errorCode = error.response?.data?.code;
+    let errorMessage = "An unexpected error occurred.";
+
+    switch (errorCode) {
+      case "BAD_PICTURE_DATA":
+        errorMessage = "Picture data is invalid.";
+        break;
+      case "NOT_AUTHENTICATED":
+        errorMessage = "You must be logged in to perform this action.";
+        break;
+      case "NO_SUCH_ENTITY":
+        errorMessage = "The picture does not exist.";
+        break;
+      case "NOT_YOURS":
+        errorMessage = "This picture does not belong to you.";
+        break;
+      case "INVALID_DATA":
+        errorMessage = "Invalid input data. Please check the provided fields.";
+        break;
+      case "INTERNAL_ERROR":
+        errorMessage = "There was an internal error on the server.";
+        break;
+      default:
+        break;
+    }
+
+    toast.error(errorMessage);
+
+    return Promise.reject(error);
+  }
+);
 
 export const usePictureStore = defineStore({
   id: "pictures",
