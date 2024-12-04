@@ -4,14 +4,12 @@
       <v-card-title class="text-h4 text-center">Register a new account</v-card-title>
       <v-card-subtitle class="text-p6 text-center">Pick your username and password below</v-card-subtitle>
       <v-card-text>
-        <v-form @submit.prevent="handleSubmit(onSubmit)">
-          <v-text-field label="Username" v-model="username" :error-messages="usernameError" outlined dense width="520">
-          </v-text-field>
-          <v-text-field label="Password" v-model="password" :type="'password'" :error-messages="passwordError" outlined dense>
-          </v-text-field>
-          <v-text-field label="Confirm password" v-model="confirmPassword" :type="'password'"
-            :error-messages="confirmPasswordError" outlined dense>
-          </v-text-field>
+        <v-form @submit.prevent="onSubmit">
+          <v-text-field label="Username" v-model="username" :error-messages="usernameError" dense></v-text-field>
+          <v-text-field label="Password" v-model="password" type="password" :error-messages="passwordError" outlined
+            dense></v-text-field>
+          <v-text-field label="Confirm password" v-model="confirmPassword" type="password"
+            :error-messages="confirmPasswordError" outlined dense></v-text-field>
           <v-btn type="submit" class="mt-4" color="primary" block>
             Register
           </v-btn>
@@ -22,68 +20,47 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useForm, useField } from "vee-validate";
-import * as yup from "yup";
-
-import type { UserCreationReq } from "@/types/auth";
-import { useAuthStore } from "@/stores/authStore";
-import router from "@/router";
+import { defineComponent } from 'vue';
+import { useForm, useField } from 'vee-validate';
+import * as yup from 'yup';
+import { useAuthStore } from '@/stores/authStore';
+import router from '@/router';
 
 export default defineComponent({
   setup() {
     const authStore = useAuthStore();
 
     const validationSchema = yup.object({
-      username: yup.string().min(2).max(32).required("Username is required"),
-      password: yup.string().min(8).max(128).required("Password is required"),
-      confirmPassword: yup
-        .string()
-        .oneOf([yup.ref("password")], "Passwords must match")
-        .required("Confirm password is required"),
+      username: yup.string().min(2).max(32).required('Username is required'),
+      password: yup.string().min(8).max(128).required('Password is required'),
+      confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match').required('Confirm password is required'),
     });
 
     const { handleSubmit } = useForm({ validationSchema });
 
-    const { value: username, errorMessage: usernameError } = useField<string>("username");
-    const { value: password, errorMessage: passwordError } = useField<string>("password");
-    const { value: confirmPassword, errorMessage: confirmPasswordError } = useField<string>("confirmPassword");
+    const { value: username, errorMessage: usernameError } = useField<string>('username');
+    const { value: password, errorMessage: passwordError } = useField<string>('password');
+    const { value: confirmPassword, errorMessage: confirmPasswordError } = useField<string>('confirmPassword');
 
-    const onSubmit = async () => {
-      console.log("Form Data:", {
-        username: username.value,
-        password: password.value,
-        confirmPassword: confirmPassword.value,
-      });
-
-      const registerReq: UserCreationReq = {
-        username: username.value,
-        password: password.value,
+    const onSubmit = handleSubmit(async (values) => {
+      const registerReq = {
+        username: values.username,
+        password: values.password
       };
-
-      console.log("Register Request:", registerReq);
-
       const success = await authStore.register(registerReq);
-
-      if (!success) {
-        console.log("Registration failed");
-        return;
+      if (success) {
+        router.push('login');
       }
-
-      console.log("Registration successful");
-
-      router.push("login");
-    };
+    });
 
     return {
-      handleSubmit,
-      onSubmit,
       username,
       usernameError,
       password,
       passwordError,
       confirmPassword,
       confirmPasswordError,
+      onSubmit,
     };
   },
 });
