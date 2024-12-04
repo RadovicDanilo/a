@@ -21,11 +21,18 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useForm, useField } from "vee-validate";
+import { useForm, useField, type SubmissionHandler } from "vee-validate";
 import * as yup from "yup";
+import type {
+  LoginReq,
+} from "@/types/auth"
+import { useAuthStore } from "@/stores/authStore";
+
 
 export default defineComponent({
   setup() {
+    const authStore = useAuthStore();
+
     const validationSchema = yup.object({
       username: yup.string().min(2).max(32).required("Username is required"),
       password: yup.string().min(8).max(128).required("Password is required"),
@@ -38,12 +45,21 @@ export default defineComponent({
     const { value: username, errorMessage: usernameError } = useField<string>("username");
     const { value: password, errorMessage: passwordError } = useField<string>("password");
 
-    const onSubmit = (values: { username: string; password: string }) => {
-      //TODO: implment
+    const onSubmit = () => {
+      const loginReq: LoginReq = {
+        username: username.value,
+        password: password.value,
+      }
+      const success = authStore.login(loginReq);
+      if (!success) {
+        return;
+      }
+
     };
 
     return {
       handleSubmit,
+      onSubmit,
       username,
       usernameError,
       password,

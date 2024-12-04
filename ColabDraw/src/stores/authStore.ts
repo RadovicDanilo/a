@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import axios from "axios";
-import useToast from "vue-toastification"
+import { useToast } from "vue-toastification"
 import type {
     UserCreationReq,
     UserCreationRes,
@@ -51,7 +51,7 @@ export const useAuthStore = defineStore({
     }),
 
     actions: {
-        async login(LoginReq: LoginReq) {
+        async login(LoginReq: LoginReq): Promise<boolean> {
             try {
                 const response = await axios.post<LoginRes>(
                     `${API_BASE_URL}/auth/login`,
@@ -62,12 +62,11 @@ export const useAuthStore = defineStore({
                 this.username = response.data.username;
                 return true;
             } catch (error) {
-                console.log("Failed to login", error)
                 return false;
             }
         },
 
-        async register(UserCreationReq: UserCreationReq) {
+        async register(UserCreationReq: UserCreationReq): Promise<boolean> {
             try {
                 const response = await axios.post<UserCreationRes>(
                     `${API_BASE_URL}/auth/register`,
@@ -75,7 +74,6 @@ export const useAuthStore = defineStore({
                 );
                 return true;
             } catch (error) {
-                console.log("Failed to register", error)
                 return false;;
             }
         },

@@ -27,8 +27,15 @@ import { defineComponent } from "vue";
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 
+import type {
+  UserCreationReq,
+} from "@/types/auth"
+import { useAuthStore } from "@/stores/authStore";
+
 export default defineComponent({
   setup() {
+    const authStore = useAuthStore();
+
     const validationSchema = yup.object({
       username: yup.string().min(2).max(32).required("Username is required"),
       password: yup.string().min(8).max(128).required("Password is required"),
@@ -44,12 +51,20 @@ export default defineComponent({
     const { value: password, errorMessage: passwordError } = useField<string>("password");
     const { value: confirmPassword, errorMessage: confirmPasswordError } = useField<string>("confirmPassword");
 
-    const onSubmit = (values: { username: string; password: string; }) => {
-      //TODO: implment
+    const onSubmit = () => {
+      const registerReq: UserCreationReq = {
+        username: username.value,
+        password: password.value,
+      }
+      const success = authStore.register(registerReq);
+      if (!success) {
+        return;
+      }
     };
 
     return {
       handleSubmit,
+      onSubmit,
       username,
       usernameError,
       password,
