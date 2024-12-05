@@ -60,6 +60,7 @@ export const useAuthStore = defineStore({
                 this.token = response.data.token;
                 this.user_id = response.data.user_id;
                 this.username = response.data.username;
+                toast.success("Sucesefully loged in.");
                 return true;
             } catch (error) {
                 return false;
@@ -72,6 +73,7 @@ export const useAuthStore = defineStore({
                     `${API_BASE_URL}/auth/register`,
                     UserCreationReq
                 );
+                toast.success("Sucesefully registered, please log in.");
                 return true;
             } catch (error) {
                 return false;;
@@ -82,6 +84,8 @@ export const useAuthStore = defineStore({
             this.token = "";
             this.user_id = "";
             this.username = "";
+            toast.success("Sucesefully loged out");
+
         },
     }
 })

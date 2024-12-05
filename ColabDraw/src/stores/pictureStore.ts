@@ -12,12 +12,15 @@ import type {
 
 const API_BASE_URL = "https://raf-pixeldraw.aarsen.me/api";
 
-const authStore = useAuthStore();
-const { token } = storeToRefs(authStore);
+const getAuthToken = () => {
+  const authStore = useAuthStore();
+  return authStore.token;
+};
 
 axios.interceptors.request.use((config) => {
-  if (token.value) {
-    config.headers.Authorization = `Bearer ${token.value}`;
+  const token = getAuthToken()
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 }, (error) => {
@@ -118,6 +121,7 @@ export const usePictureStore = defineStore({
           newPicture
         );
         await this.fetchPictureById(response.data.picture_id);
+        toast.success("Picture created sucesefully.");
       } catch (error) {
         console.error("Failed to create picture", error);
       }
@@ -128,6 +132,7 @@ export const usePictureStore = defineStore({
         await axios.patch(`${API_BASE_URL}/pictures/${pictureId}`, updates);
         this.items = filter(this.items, (p: PictureDto) => p.picture_id !== pictureId);
         await this.fetchPictureById(pictureId);
+        toast.success("Picture updated sucesefully.");
       } catch (error) {
         console.error("Failed to update picture", error);
       }
@@ -137,6 +142,7 @@ export const usePictureStore = defineStore({
       try {
         await axios.delete(`${API_BASE_URL}/pictures/${pictureId}`);
         this.items = filter(this.items, (p: PictureDto) => p.picture_id !== pictureId);
+        toast.success("Picture deleted sucesefully.");
       } catch (error) {
         console.error("Failed to delete picture", error);
       }
