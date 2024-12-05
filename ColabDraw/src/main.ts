@@ -27,6 +27,7 @@ app.use(Toast);
 app.mount("#app");
 
 //TODO: fix this
+/*
 nextTick(() => {
   DarkReader.auto(
     {
@@ -48,3 +49,4 @@ nextTick(() => {
     }
   );
 });
+*/
