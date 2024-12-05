@@ -2,22 +2,36 @@
   <nav>
     <div>
       <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
-      <RouterLink :to="{ name: 'gallery' }" class="nav-link"
-        >Gallery</RouterLink
-      >
+      <RouterLink :to="{ name: 'gallery' }" class="nav-link">Gallery</RouterLink>
+      <RouterLink v-if="isAuthenticated" :to="{ name: 'gallery', query: { user: username } }" class="nav-link">
+        My Gallery
+      </RouterLink>
       <RouterLink :to="{ name: 'draw' }" class="nav-link">Draw</RouterLink>
     </div>
     <div>
-      <RouterLink :to="{ name: 'register' }" class="nav-link"
-        >Register</RouterLink
-      >
-      <RouterLink :to="{ name: 'login' }" class="nav-link">Login</RouterLink>
+      <RouterLink v-if="!isAuthenticated" :to="{ name: 'register' }" class="nav-link">Register</RouterLink>
+      <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="nav-link">Login</RouterLink>
+      <span v-if="isAuthenticated" class="nav-link">{{ username }}</span>
+      <button v-if="isAuthenticated" @click="logout" class="nav-link logout-button">Logout</button>
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/authStore';
+import { computed } from 'vue';
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const isAuthenticated = computed(() => authStore.token.length != 0);
+const username = computed(() => authStore.username);
+
+const logout = async () => {
+  await authStore.logout();
+  router.push({ name: 'home' });
+};
 </script>
 
 <style scoped>
