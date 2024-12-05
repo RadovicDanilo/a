@@ -1,20 +1,11 @@
 <template>
   <div class="tools">
     <div v-for="tool in tools">
-      <div
-        class="tool"
-        @click="selectTool(tool[0])"
-        :class="{ selected: currentTool === tool[0] }"
-      >
+      <div class="tool" @click="selectTool(tool[0])" :class="{ selected: currentTool === tool[0] }">
         <span :class="['mdi', tool[1], 'tool-icon']"></span>
       </div>
     </div>
-    <input
-      type="color"
-      v-model="currentColor"
-      class="color-picker"
-      @input="updateColor(currentColor)"
-    />
+    <input type="color" v-model="currentColor" class="color-picker" @input="updateColor(currentColor)" />
   </div>
 </template>
 
