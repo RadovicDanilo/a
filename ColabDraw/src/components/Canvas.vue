@@ -45,6 +45,9 @@ import { useToast } from "vue-toastification";
 import Tools from "@/components/Tools.vue";
 
 export default defineComponent({
+  components: {
+    Tools,
+  },
   setup() {
     const toast = useToast()
 
