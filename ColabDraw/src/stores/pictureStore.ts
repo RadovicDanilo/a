@@ -138,13 +138,15 @@ export const usePictureStore = defineStore({
       }
     },
 
-    async deletePicture(pictureId: string) {
+    async deletePicture(pictureId: string): Promise<boolean> {
       try {
         await axios.delete(`${API_BASE_URL}/pictures/${pictureId}`);
         this.items = filter(this.items, (p: PictureDto) => p.picture_id !== pictureId);
         toast.success("Picture deleted sucesefully.");
+        return true;
       } catch (error) {
         console.error("Failed to delete picture", error);
+        return false;
       }
     },
   },
