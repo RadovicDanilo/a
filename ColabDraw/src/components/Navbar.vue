@@ -3,7 +3,7 @@
     <div>
       <RouterLink :to="{ name: 'home' }" class="nav-link">Home</RouterLink>
       <RouterLink :to="{ name: 'gallery' }" class="nav-link">Gallery</RouterLink>
-      <RouterLink v-if="isAuthenticated" :to="{ name: 'gallery', query: { user: username } }" class="nav-link">
+      <RouterLink v-if="isAuthenticated" :to="{ name: 'gallery', query: { user: userId } }" class="nav-link">
         My Gallery
       </RouterLink>
       <RouterLink :to="{ name: 'draw' }" class="nav-link">Draw</RouterLink>
@@ -27,6 +27,7 @@ const router = useRouter();
 
 const isAuthenticated = computed(() => authStore.token.length != 0);
 const username = computed(() => authStore.username);
+const userId = computed(() => authStore.user_id);
 
 const logout = async () => {
   await authStore.logout();
