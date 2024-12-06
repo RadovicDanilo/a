@@ -16,14 +16,17 @@
       </div>
       <div class="canvas" :style="{
         gridTemplateColumns: `repeat(${pixels.length}, 1fr)`,
-        gridTemplateRows: `repeat(${pixels.length}, 1fr)`
+        gridTemplateRows: `repeat(${pixels.length}, 1fr)`,
       }" @mousedown="startDrawing" @mouseup="stopDrawing" @mouseleave="stopDrawing" draggable="false">
         <div v-for="(row, rowIndex) in pixels" :key="rowIndex" class="pixel-row">
-          <div v-for="(pixel, colIndex) in row" :key="colIndex" class="pixel" :style="{ backgroundColor: pixel.color }"
-            @mouseover="draw(rowIndex, colIndex)" @click="clickPixel(rowIndex, colIndex)">
-          </div>
+          <div v-for="(pixel, colIndex) in row" :key="colIndex" class="pixel" :style="{
+            backgroundColor: pixel.color,
+            width: pixelSize,
+            height: pixelSize
+          }" @mouseover="draw(rowIndex, colIndex)" @click="clickPixel(rowIndex, colIndex)"></div>
         </div>
       </div>
+
     </div>
     <div v-if="isDialogOpen" class="dialog-overlay">
       <div class="dialog">
@@ -39,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { usePictureStore } from "@/stores/pictureStore";
 import { useToast } from "vue-toastification";
 import Tools from "@/components/Tools.vue";
@@ -56,6 +59,7 @@ export default defineComponent({
     const CANVAS_SIZE = 12;
     const CANVAS_MIN_SIZE = 1;
     const CANVAS_MAX_SIZE = 16;
+    const CANVAS_CONTAINER_SIZE = 600;
 
     const createMatrix = (size: number) =>
       Array.from({ length: size }, () =>
@@ -63,6 +67,8 @@ export default defineComponent({
       );
 
     const pixels = ref(createMatrix(CANVAS_SIZE));
+
+    const pixelSize = computed(() => `${CANVAS_CONTAINER_SIZE / pixels.value.length}px`);
 
     const tool = ref("brush");
     const color = ref("#000000");
@@ -149,6 +155,7 @@ export default defineComponent({
 
     return {
       pixels,
+      pixelSize,
       tool,
       color,
       updateTool,
@@ -327,6 +334,7 @@ export default defineComponent({
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
