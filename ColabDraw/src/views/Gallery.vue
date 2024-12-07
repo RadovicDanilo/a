@@ -7,7 +7,7 @@
         </v-col>
       </v-row>
     </v-container>
-    <v-pagination v-model="currentPage" :length="totalPages" :total-visible="5" @input="fetchGallery"></v-pagination>
+    <v-pagination v-model="currentPage" :length="totalPages" :total-visible="5" @update:model-value="fetchGallery"></v-pagination>
   </div>
 
   <div v-if="isDialogOpen" class="dialog-overlay">
@@ -70,7 +70,7 @@ export default defineComponent({
         }
       );
       pictures.value = pictureStore.items;
-      totalPages.value = Math.ceil(pictureStore.items.length / ITEMS_PER_PAGE);
+      totalPages.value = Math.ceil(pictureStore.total / ITEMS_PER_PAGE);
     };
 
     const deletingPictureId = ref("");
@@ -132,8 +132,10 @@ export default defineComponent({
       }
     };
 
-
-    watch(() => route.query.user, fetchGallery, { immediate: true });
+    watch(() => route.query.user, () => {
+      currentPage.value = 1;
+      fetchGallery();
+    }, { immediate: true });
 
     const filterUser = (userId: string) => {
       router.push({ name: 'gallery', query: { user: userId } });

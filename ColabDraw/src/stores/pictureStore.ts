@@ -3,6 +3,7 @@ import axios from "@/stores/axiosConfig";
 import { find, filter } from "lodash";
 import { useToast } from "vue-toastification";
 import type { BasePictureDto, PictureDto, NewPictureReq, PictureListingPage } from "@/types/pictures";
+import { th } from "date-fns/locale";
 
 const toast = useToast();
 
@@ -11,6 +12,7 @@ export const usePictureStore = defineStore({
 
   state: () => ({
     items: [] as PictureDto[],
+    total: 0,
   }),
 
   getters: {
@@ -29,6 +31,7 @@ export const usePictureStore = defineStore({
           },
         });
         this.items = response.data.pictures;
+        this.total = response.data.total;
       } catch { }
     },
 
