@@ -3,7 +3,7 @@
         <div class="canvas" :style="{
             gridTemplateColumns: `repeat(${picture.picture_data.length}, 1fr)`,
             gridTemplateRows: `repeat(${picture.picture_data.length}, 1fr)`,
-        }">
+        }" @click="editPicture">
             <div v-for="(row, rowIndex) in picture.picture_data" :key="rowIndex" class="pixel-row">
                 <div v-for="(pixel, colIndex) in row" :key="colIndex" class="pixel" :style="{
                     backgroundColor: pixel,
@@ -24,10 +24,13 @@
                 </div>
                 <div class="picture-time">
                     <v-icon small class="mdi mdi-calendar"></v-icon>
-                    Last updated: {{ formatUpdatedAt(picture.updated_at) }}
+                    Created: {{ formatUpdatedAt(picture.created_at) }}
                 </div>
             </div>
 
+            <v-btn @click="renamePicture">
+                <v-icon color="primary" size="25px">mdi-pencil</v-icon>
+            </v-btn>
             <v-btn style="align-items: center;" @click="deletePicture">
                 <v-icon color="error" size="25px">mdi-delete</v-icon>
             </v-btn>
@@ -67,7 +70,11 @@ export default defineComponent({
         };
 
         const editPicture = () => {
-            //TODO: implement
+            router.push({ path: `/draw/${props.picture.picture_id}` });
+        };
+
+        const renamePicture = () => {
+            emit("rename", props.picture);
         };
 
         const formatUpdatedAt = (updatedAt: string) => {
@@ -81,6 +88,8 @@ export default defineComponent({
             deletePicture,
             filterAuthor,
             formatUpdatedAt,
+            editPicture,
+            renamePicture,
         };
     },
 });

@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="12" md="6" lg="3" v-for="picture in pictures" :key="picture.picture_id">
-          <Picture :picture="picture" @delete="openDeleteDialog" @filter="filterUser" />
+          <Picture :picture="picture" @delete="openDeleteDialog" @filter="filterUser" @rename="openRenameDialog" />
         </v-col>
       </v-row>
     </v-container>
@@ -19,9 +19,20 @@
       </div>
     </div>
   </div>
+  <div v-if="isRenameDialogOpen" class="dialog-overlay">
+    <div class="dialog">
+      <h2 class="dialog-title">Enter Picture Name</h2>
+      <input v-model="pictureName" type="text" placeholder="Picture Name" class="dialog-input" />
+      <div class="dialog-actions">
+        <button @click="rename" class="dialog-button save-button">Save</button>
+        <button @click="closeRenameDialog" class="dialog-button cancel-button">Cancel</button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
+import { useToast } from "vue-toastification";
 import { ref, defineComponent, Text, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { usePictureStore } from "@/stores/pictureStore";
@@ -36,6 +47,8 @@ export default defineComponent({
   },
 
   setup() {
+    const toast = useToast();
+
     const ITEMS_PER_PAGE = 8;
 
     const pictureStore = usePictureStore();
@@ -79,6 +92,47 @@ export default defineComponent({
         await fetchGallery();
     };
 
+    const pictureName = ref("");
+    const isRenameDialogOpen = ref(false);
+    let renamedPicture: PictureDto | undefined = undefined;
+
+    const openRenameDialog = (pic: PictureDto) => {
+      renamedPicture = pic;
+      pictureName.value = renamedPicture.name
+      isRenameDialogOpen.value = true;
+    };
+
+    const closeRenameDialog = () => {
+      isRenameDialogOpen.value = false;
+    };
+
+    const rename = async () => {
+      if (pictureName.value.trim() === "") {
+        toast.error("Picture name cannot be empty.");
+        return;
+      }
+
+      if (renamedPicture === undefined) return;
+
+      const originalName = renamedPicture.name;
+
+      try {
+        const newPic = { ...renamedPicture, name: pictureName.value };
+
+        await pictureStore.updatePicture(renamedPicture.picture_id, newPic);
+        renamedPicture = await pictureStore.fetchPictureById(renamedPicture.picture_id);
+        fetchGallery();
+      } catch (error) {
+        if (renamedPicture === undefined)
+          return;
+        renamedPicture.name = originalName;
+      } finally {
+        pictureName.value = "";
+        isRenameDialogOpen.value = false;
+      }
+    };
+
+
     watch(() => route.query.user, fetchGallery, { immediate: true });
 
     const filterUser = (userId: string) => {
@@ -90,6 +144,7 @@ export default defineComponent({
     });
 
     return {
+      isRenameDialogOpen,
       currentPage,
       totalPages,
       pictures,
@@ -99,7 +154,12 @@ export default defineComponent({
       openDeleteDialog,
       closeDeleteDialog,
       deletePicture,
+      renamePicture: openRenameDialog,
       filterUser,
+      openRenameDialog,
+      closeRenameDialog,
+      rename,
+      pictureName,
     };
   },
 });
@@ -169,6 +229,94 @@ export default defineComponent({
 
 .delete-button:hover {
   background-color: #ff2222;
+}
+
+.cancel-button {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.cancel-button:hover {
+  background-color: #ddd;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.dialog {
+  background-color: white;
+  padding: 30px 40px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.dialog-input {
+  padding: 12px 16px;
+  font-size: 1rem;
+  width: 100%;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.dialog-input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.dialog-button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-grow: 1;
+}
+
+.save-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #0056b3;
 }
 
 .cancel-button {

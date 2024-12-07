@@ -32,14 +32,16 @@ export const usePictureStore = defineStore({
       } catch { }
     },
 
-    async fetchPictureById(pictureId: string) {
+    async fetchPictureById(pictureId: string): Promise<PictureDto | undefined> {
       const existingPicture = this.getPictureById(pictureId);
       if (existingPicture) return existingPicture;
       try {
         const response = await axios.get<{ picture: PictureDto }>(`/pictures/${pictureId}`);
         this.items.push(response.data.picture);
         return response.data.picture;
-      } catch { }
+      } catch {
+        return undefined;
+      }
     },
 
     async createPicture(newPicture: NewPictureReq) {

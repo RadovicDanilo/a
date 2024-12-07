@@ -29,8 +29,9 @@ const router = createRouter({
       component: Gallery,
     },
     {
-      path: "/draw/",
+      path: '/draw/:pictureId?',
       name: "draw",
+      props:true,
       component: Draw,
     },
   ],
