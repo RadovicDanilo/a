@@ -15,7 +15,7 @@
 
         <v-card-title class="picture-info">
             <div class="info-left">
-                <div class="title-author">
+                <div class="title-author" @click="filterAuthor">
                     <h3 class="picture-title">{{ picture.name }}</h3>
                     <div class="picture-author">
                         <v-icon small class="mdi mdi-account"></v-icon>
@@ -40,6 +40,7 @@ import { defineComponent, computed } from "vue";
 import { formatDistanceToNow } from 'date-fns';
 import type { PropType } from "vue";
 import type { PictureDto } from "@/types/pictures";
+import router from "@/router";
 
 export default defineComponent({
     name: "Picture",
@@ -61,6 +62,14 @@ export default defineComponent({
             emit("delete", props.picture.picture_id);
         };
 
+        const filterAuthor = () => {
+            emit("filter", props.picture.author.user_id);
+        };
+
+        const editPicture = () => {
+            //TODO: implement
+        };
+
         const formatUpdatedAt = (updatedAt: string) => {
             const date = new Date(updatedAt);
             return formatDistanceToNow(date) + " ago";
@@ -70,6 +79,7 @@ export default defineComponent({
             testColor,
             pixelSize,
             deletePicture,
+            filterAuthor,
             formatUpdatedAt,
         };
     },
@@ -124,6 +134,11 @@ export default defineComponent({
     align-items: center;
     gap: 5px;
     font-size: 1rem;
+}
+
+.picture-author:hover {
+    color: #007BFF;
+    cursor: pointer;
 }
 
 .picture-time {

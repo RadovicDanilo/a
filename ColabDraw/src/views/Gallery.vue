@@ -3,7 +3,7 @@
     <v-container>
       <v-row>
         <v-col cols="12" md="6" lg="3" v-for="picture in pictures" :key="picture.picture_id">
-          <Picture :picture="picture" @delete="openDeleteDialog" />
+          <Picture :picture="picture" @delete="openDeleteDialog" @filter="filterUser" />
         </v-col>
       </v-row>
     </v-container>
@@ -22,12 +22,13 @@
 </template>
 
 <script lang="ts">
-import { ref, defineComponent, Text } from "vue";
+import { ref, defineComponent, Text, watch, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { usePictureStore } from "@/stores/pictureStore";
 import Picture from "@/components/Picture.vue";
 import { VContainer, VRow, VCol } from "vuetify/components";
 import type { PictureDto } from "@/types/pictures";
+import router from "@/router";
 
 export default defineComponent({
   components: {
@@ -45,11 +46,13 @@ export default defineComponent({
     const route = useRoute();
 
     const fetchGallery = async () => {
+      const userFilter = route.query.user ? String(route.query.user) : undefined;
+
       await pictureStore.fetchPictures(
         {
           limit: ITEMS_PER_PAGE,
           page: currentPage.value,
-          author: route.query.user ? String(route.query.user) : undefined,
+          author: userFilter,
           olderFirst: false,
         }
       );
@@ -76,7 +79,15 @@ export default defineComponent({
         await fetchGallery();
     };
 
-    fetchGallery();
+    watch(() => route.query.user, fetchGallery, { immediate: true });
+
+    const filterUser = (userId: string) => {
+      router.push({ name: 'gallery', query: { user: userId } });
+    };
+
+    onMounted(() => {
+      fetchGallery();
+    });
 
     return {
       currentPage,
@@ -88,6 +99,7 @@ export default defineComponent({
       openDeleteDialog,
       closeDeleteDialog,
       deletePicture,
+      filterUser,
     };
   },
 });
