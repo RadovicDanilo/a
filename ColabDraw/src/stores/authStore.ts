@@ -28,7 +28,6 @@ export const useAuthStore = defineStore({
         toast.success("Successfully logged in.");
         return true;
       } catch {
-        toast.error("Login failed.");
         return false;
       }
     },
@@ -39,7 +38,6 @@ export const useAuthStore = defineStore({
         toast.success("Successfully registered, please log in.");
         return true;
       } catch {
-        toast.error("Registration failed.");
         return false;
       }
     },

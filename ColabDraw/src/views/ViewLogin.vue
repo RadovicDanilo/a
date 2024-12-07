@@ -1,8 +1,8 @@
 <template>
   <v-container class="d-flex justify-center align-center">
     <v-card class="elevation-3 px-6 py-6" max-width="800">
-      <v-card-title class="text-h4 text-center">Register a new account</v-card-title>
-      <v-card-subtitle class="text-p6 text-center">Pick your username and password below</v-card-subtitle>
+      <v-card-title class="text-h4 text-center">Login to your account</v-card-title>
+      <v-card-subtitle class="text-p6 text-center">Enter your username and password below</v-card-subtitle>
       <v-card-text>
         <v-form @submit.prevent="onSubmit">
           <v-text-field label="Username" v-model="username" :error-messages="usernameError" dense></v-text-field>

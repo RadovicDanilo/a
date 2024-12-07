@@ -49,7 +49,7 @@ export default defineComponent({
       };
       const success = await authStore.register(registerReq);
       if (success) {
-        router.push('login');
+        router.push("login");
       }
     });
 

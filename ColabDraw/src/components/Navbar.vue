@@ -11,8 +11,8 @@
     <div>
       <RouterLink v-if="!isAuthenticated" :to="{ name: 'register' }" class="nav-link">Register</RouterLink>
       <RouterLink v-if="!isAuthenticated" :to="{ name: 'login' }" class="nav-link">Login</RouterLink>
-      <span v-if="isAuthenticated" class="nav-link">{{ username }}</span>
       <button v-if="isAuthenticated" @click="logout" class="nav-link logout-button">Logout</button>
+      <span v-if="isAuthenticated" class="nav-link">{{ username }}</span>
     </div>
   </nav>
 </template>
@@ -31,7 +31,7 @@ const userId = computed(() => authStore.user_id);
 
 const logout = async () => {
   await authStore.logout();
-  router.push({ name: 'home' });
+  router.push({ name: 'login' });
 };
 </script>
 

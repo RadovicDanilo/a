@@ -1,5 +1,5 @@
 <template>
-    <v-card class="picture-container" elevation="2">
+    <v-card class="picture-container">
         <div class="canvas" :style="{
             gridTemplateColumns: `repeat(${picture.picture_data.length}, 1fr)`,
             gridTemplateRows: `repeat(${picture.picture_data.length}, 1fr)`,
@@ -31,7 +31,7 @@
             <v-btn @click="renamePicture">
                 <v-icon color="primary" size="25px">mdi-pencil</v-icon>
             </v-btn>
-            <v-btn style="align-items: center;" @click="deletePicture">
+            <v-btn @click="deletePicture">
                 <v-icon color="error" size="25px">mdi-delete</v-icon>
             </v-btn>
         </v-card-title>
