@@ -2,7 +2,7 @@ import axios from "axios";
 import { useToast } from "vue-toastification";
 import { useAuthStore } from "@/stores/authStore";
 
-const API_BASE_URL = "https://raf-pixeldraw.aarsen.me/api";
+const API_BASE_URL = "http://localhost:3000";
 const toast = useToast();
 
 axios.defaults.baseURL = API_BASE_URL;
