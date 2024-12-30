@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import { Request, Response } from "express";
 import { AppDataSource } from "../data-source";
 import { User } from "../entities/User";
-import { registerSchema, loginSchema } from "../zodSchemas";
 
 const userRepository = AppDataSource.getRepository(User);
 

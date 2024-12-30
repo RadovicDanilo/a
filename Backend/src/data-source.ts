@@ -2,6 +2,7 @@ import "reflect-metadata";
 import { DataSource } from "typeorm";
 import dotenv from "dotenv";
 import { User } from "./entities/User";
+import { Picture } from "./entities/Picture";
 
 dotenv.config();
 
