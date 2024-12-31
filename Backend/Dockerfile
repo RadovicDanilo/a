@@ -1,20 +1,21 @@
-FROM node:16
+# Base image for Node.js
+FROM node:18
 
-# Create app directory
-WORKDIR /usr/src/app
+# Set working directory
+WORKDIR /dist
 
 # Copy package.json and install dependencies
-COPY package.json .
+COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application
+# Copy the rest of the app's source code
 COPY . .
 
 # Compile TypeScript
 RUN npm run build
 
-# Expose the application port
+# Expose the backend port
 EXPOSE 3000
 
-# Start the application
-CMD ["node", "dist/index.js"]
+# Start the backend
+CMD ["node", "dist/app.js"]
