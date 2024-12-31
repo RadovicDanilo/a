@@ -8,7 +8,7 @@ export const basePictureSchema = z.object({
     picture_data: z
         .array(
             z.array(
-                z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Invalid color format (#rgb or #rrggbb expected)").optional().nullable()
+                z.string().regex(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/, "Invalid color format (#rgb or #rrggbb expected)")
             )
         )
         .refine(

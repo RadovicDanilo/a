@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { ZodSchema } from "zod";
-import { ZodError } from "zod";
+import { ZodError, ZodSchema } from "zod";
 
 export const validateSchema = (schema: ZodSchema) => {
     return (req: Request, res: Response, next: NextFunction): void => {
@@ -9,16 +8,22 @@ export const validateSchema = (schema: ZodSchema) => {
             next();
         } catch (error) {
             if (error instanceof ZodError) {
+                const isBadPictureDataError = error.errors.some((err) =>
+                    err.message.includes("Picture data must be a square matrix") ||
+                    err.message.includes("Invalid color format")
+                );
+
                 res.status(400).json({
                     failed: true,
-                    code: "INVALID_DATA",
+                    code: isBadPictureDataError ? "BAD_PICTURE_DATA" : "INVALID_DATA",
                     extra: error.errors,
                 });
+            } else {
+                res.status(500).json({
+                    failed: true,
+                    code: "INTERNAL_ERROR",
+                });
             }
-            res.status(500).json({
-                failed: true,
-                code: "INTERNAL_ERROR",
-            });
         }
     };
 };

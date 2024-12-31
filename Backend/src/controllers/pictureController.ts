@@ -34,7 +34,7 @@ export const createPicture = async (req: Request, res: Response): Promise<void> 
 
     const author = await userRepository.findOne({ where: { id: decoded.userId } });
     if (!author) {
-        res.status(404).json({ failed: true, code: "NO_SUCH_ENTITY" });
+        res.status(404).json({ failed: true, code: "NOT_AUTHENTICATED" });
         return;
     }
 
@@ -57,7 +57,7 @@ export const createPicture = async (req: Request, res: Response): Promise<void> 
 };
 
 export const getPicturesList = async (req: Request, res: Response): Promise<void> => {
-    const { limit = "10", page = "1", author, older_first } = req.query;
+    const { limit = "10", page = "1", author, older_first = "true" } = req.query;
     const limitNumber = Number(limit);
     const pageNumber = Number(page);
     const offset = (pageNumber - 1) * limitNumber;
@@ -105,7 +105,7 @@ export const getPicture = async (req: Request, res: Response): Promise<void> => 
 
 export const updatePicture = async (req: Request, res: Response): Promise<void> => {
     const pictureId = req.params.pictureId;
-    const decoded = getUserData(req);
+    const jwtUserData = getUserData(req);
 
     const picture = await picturerepository.findOne({
         where: { picture_id: pictureId },
@@ -117,7 +117,7 @@ export const updatePicture = async (req: Request, res: Response): Promise<void> 
         return;
     }
 
-    if (picture.author.id !== decoded.userId) {
+    if (picture.author.id !== jwtUserData.userId) {
         res.status(403).json({ failed: true, code: "NOT_YOURS" });
         return;
     }
@@ -138,7 +138,7 @@ export const updatePicture = async (req: Request, res: Response): Promise<void> 
 
 export const deletePicture = async (req: Request, res: Response): Promise<void> => {
     const pictureId = req.params.pictureId;
-    const decoded = getUserData(req);
+    const jwtUserData = getUserData(req);
 
     const picture = await picturerepository.findOne({
         where: { picture_id: pictureId },
@@ -150,7 +150,7 @@ export const deletePicture = async (req: Request, res: Response): Promise<void> 
         return;
     }
 
-    if (picture.author.id !== decoded.userId) {
+    if (picture.author.id !== jwtUserData.userId) {
         res.status(403).json({ failed: true, code: "NOT_YOURS" });
         return;
     }

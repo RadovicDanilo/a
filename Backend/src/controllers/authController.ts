@@ -32,7 +32,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
             user_id: newUser.id,
         });
     } catch (error) {
-        console.error("Error during registration:", error);  
+        console.error("Error during registration:", error);
         res.status(500).json({
             failed: true,
             code: "INTERNAL_ERROR",
@@ -55,7 +55,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         }
 
         const token = jwt.sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET as string, {
-            expiresIn: "1h",
+            expiresIn: "24h",
         });
 
         res.status(200).json({

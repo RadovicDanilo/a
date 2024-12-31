@@ -1,24 +1,26 @@
 import express, { Application } from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
+
 import authRoutes from './routes/authRouter';
 import pictureRoutes from './routes/pictureRouter';
+
+import cors from 'cors';
 
 import "reflect-metadata";
 import { AppDataSource } from "./data-source";
 
 const app: Application = express();
 const PORT = 3000;
-const APP_PORT = 5174;
+const APP_PORT = 5173;
 
 app.use(express.json());
 app.use(bodyParser.json());
 
-app.use(cors({
-    origin: "http://localhost:" + APP_PORT,
-    methods: ["GET", "POST", "PATCH", "DELETE"],
-    credentials: true
-}));
+app.use(
+    cors({
+        origin: "*",// TODO: remove if porduction
+    })
+);
 
 app.use('/auth', authRoutes);
 app.use('/pictures', pictureRoutes);

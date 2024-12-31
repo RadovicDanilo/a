@@ -35,8 +35,7 @@ export class Picture {
 
     @AfterLoad()
     loadPictureData() {
-        const data = JSON.parse(this.picture_data);
-        this._picture_data_matrix = data;
+        this._picture_data_matrix = JSON.parse(this.picture_data);
     }
 
     @BeforeInsert()
