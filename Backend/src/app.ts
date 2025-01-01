@@ -37,34 +37,34 @@ const userConnections: Record<string, { pictureId: string; username: string }> =
 const roomUsers: Record<string, Set<string>> = {};
 const canvasStates: Record<string, Array<Array<{ color: string }>>> = {};
 const cursorState: Record<string, Record<string, { x: number, y: number }>> = {};
-
 io.on('connection', (socket) => {
     socket.on('join', ({ pictureId, username, canvas }) => {
+        console.log(`User ${username} is joining room: ${pictureId}`);
+
         userConnections[socket.id] = { pictureId, username };
 
         socket.join(pictureId);
 
         if (!roomUsers[pictureId]) {
             roomUsers[pictureId] = new Set();
-        }
-        roomUsers[pictureId].add(socket.id);
-
-        if (!canvasStates[pictureId]) {
-            canvasStates[pictureId] = canvas;
-        }
-
-        if (!cursorState[pictureId]) {
             cursorState[pictureId] = {};
+            canvasStates[pictureId] = canvas;
+            console.log("SETTING CANVAS")
+            console.log(canvas)
+            console.log(`Room ${pictureId} created.`);
         }
-        cursorState[pictureId][username] = { x: 0, y: 0 };
 
         socket.emit('init', { canvas: canvasStates[pictureId], cursors: cursorState[pictureId] });
+
+        roomUsers[pictureId].add(socket.id);
+        cursorState[pictureId][username] = { x: 0, y: 0 };
 
         console.log(`${username} joined room: ${pictureId}`);
         socket.to(pictureId).emit('user_joined', { username });
     });
 
     socket.on('draw', ({ pictureId, row, col, color }) => {
+        console.log(`User drew on picture ${pictureId} at row ${row}, col ${col} with color ${color}`);
         canvasStates[pictureId][row][col] = { color };
         socket.to(pictureId).emit('draw', { row, col, color });
     });
@@ -74,36 +74,34 @@ io.on('connection', (socket) => {
         socket.to(pictureId).emit('update_cursor', { username, x, y });
     });
 
-    socket.on('increase_size', (pictureId) => {
-        if (canvasStates[pictureId]) {
-            const currentSize = canvasStates[pictureId].length;
-            const newSize = currentSize + 1;
+    socket.on('increase_size', ({pictureId}) => {
+        console.log(`Increasing canvas size for room ${pictureId}`);
+        const currentSize = canvasStates[pictureId].length;
+        const newSize = currentSize + 1;
 
-            if (newSize > 24) return;
+        if (newSize > 24) return;
 
-            canvasStates[pictureId] = Array.from({ length: newSize }, (_, row) =>
-                Array.from({ length: newSize }, (_, col) =>
-                    canvasStates[pictureId][row]?.[col] || { color: "#FFFFFF" }
-                )
-            );
+        canvasStates[pictureId] = Array.from({ length: newSize }, (_, row) =>
+            Array.from({ length: newSize }, (_, col) =>
+                canvasStates[pictureId][row]?.[col] || { color: "#FFFFFF" }
+            )
+        );
 
-            socket.to(pictureId).emit('increase_size');
-        }
+        socket.to(pictureId).emit('increase_size');
     });
 
-    socket.on('decrease_size', (pictureId) => {
-        if (canvasStates[pictureId]) {
-            const currentSize = canvasStates[pictureId].length;
-            const newSize = currentSize - 1;
+    socket.on('decrease_size', ({pictureId}) => {
+        console.log(`Decreasing canvas size for room ${pictureId}`);
+        const currentSize = canvasStates[pictureId].length;
+        const newSize = currentSize - 1;
 
-            if (newSize < 1) return;
+        if (newSize < 1) return;
 
-            canvasStates[pictureId] = canvasStates[pictureId]
-                .slice(0, newSize)
-                .map(row => row.slice(0, newSize));
+        canvasStates[pictureId] = canvasStates[pictureId]
+            .slice(0, newSize)
+            .map(row => row.slice(0, newSize));
 
-            socket.to(pictureId).emit('decrease_size');
-        }
+        socket.to(pictureId).emit('decrease_size');
     });
 
     socket.on('disconnect', () => {
@@ -113,7 +111,7 @@ io.on('connection', (socket) => {
 
         delete userConnections[socket.id];
         roomUsers[pictureId].delete(socket.id);
-        delete cursorState[pictureId][username]
+        delete cursorState[pictureId][username];
 
         console.log(`${username} left room: ${pictureId}`);
         socket.to(pictureId).emit('user_left', { username });

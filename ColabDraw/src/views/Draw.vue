@@ -1,6 +1,6 @@
 <template>
   <div class="drawing-app" @mousemove="trackCursorPosition">
-    <div v-for="(cursor, username) in cursors" :key="username" class="cursor" :style="{
+    <div v-for="(cursor, username) in userCursors" :key="username" class="cursor" :style="{
       top: `${cursor.y}px`,
       left: `${cursor.x}px`,
     }">
@@ -56,7 +56,6 @@ import Tools from "@/components/Tools.vue";
 import { useRoute } from "vue-router";
 import { io, Socket } from "socket.io-client"
 import { useAuthStore } from "@/stores/authStore";
-import { tr } from "date-fns/locale";
 
 export default defineComponent({
   components: {
@@ -67,8 +66,7 @@ export default defineComponent({
 
     const SOCKET_URL = "http://localhost:3000";
     const socket = ref<Socket | null>(null);
-    const cursors = ref<Record<string, { x: number; y: number }>>({});
-    const username = ref("");
+    const userCursors = ref<Record<string, { x: number; y: number }>>({});
 
     const pictureStore = usePictureStore();
     const authStore = useAuthStore();
@@ -119,7 +117,7 @@ export default defineComponent({
       const tempColor = tool.value === "brush" ? color.value : "#FFFFFF"
       pixels.value[row][col].color = tempColor;
       if (socket.value != null) {
-        socket.value.emit("draw", { pictureId, row, col, color: color.value });
+        socket.value.emit("draw", { pictureId, row, col, color: tempColor});
       }
     };
 
@@ -159,7 +157,7 @@ export default defineComponent({
 
     const updateCursor = (x: number, y: number) => {
       if (socket.value) {
-        socket.value.emit("update_cursor", { pictureId, username: username.value, x, y });
+        socket.value.emit("update_cursor", { pictureId, username: authStore.username, x, y });
       }
     };
 
@@ -224,37 +222,20 @@ export default defineComponent({
       }
     };
 
-    watch(() => route.params.pictureId, (newPictureId, oldPictureId) => {
-      if (socket.value) {
-        socket.value.disconnect();
-        socket.value = null;
-      }
-      fetchPictureData();
-      connectSocket();
-    }, { immediate: true });
-
-    onMounted(() => {
-      fetchPictureData();
-      connectSocket()
-    });
-
-    onBeforeUnmount(() => {
-      if (socket.value) {
-        socket.value.disconnect();
-        socket.value = null;
-      }
-      cursors.value = {};
-    });
-
     const connectSocket = async () => {
       if (pictureId && authStore.token !== "") {
+        if (socket.value) {
+          console.log('Socket already connected');
+          return;
+        }
+
         socket.value = io(SOCKET_URL, { transports: ["websocket"] });
 
-        socket.value.emit("join", { pictureId, username: username.value, canvas: pixels.value });
+        socket.value.emit("join", { pictureId, username: authStore.username, canvas: pixels.value });
 
         socket.value.on("init", ({ canvas, cursors }) => {
           pixels.value = canvas;
-          cursors.value = cursors;
+          userCursors.value = cursors;
         });
 
         socket.value.on("draw", ({ row, col, color }) => {
@@ -264,6 +245,7 @@ export default defineComponent({
         socket.value.on("increase_size", () => {
           const newSize = pixels.value.length + 1;
           if (newSize > CANVAS_MAX_SIZE) return;
+          console.log("NEW SIZE: " + newSize)
 
           pixels.value = Array.from({ length: newSize }, (_, row) =>
             Array.from({ length: newSize }, (_, col) =>
@@ -275,6 +257,7 @@ export default defineComponent({
         socket.value.on("decrease_size", () => {
           const newSize = pixels.value.length - 1;
           if (newSize < CANVAS_MIN_SIZE) return;
+          console.log("NEW SIZE: " + newSize)
 
           pixels.value = pixels.value
             .slice(0, newSize)
@@ -282,24 +265,48 @@ export default defineComponent({
         });
 
         socket.value.on("update_cursor", ({ username, x, y }) => {
-          cursors.value[username] = { x, y };
+          userCursors.value[username] = { x, y };
         });
 
-        socket.value.on("user_joiner", ({ username }) => {
+        socket.value.on("user_joined", ({ username }) => {
           toast.info(username + " joined")
         })
 
         socket.value.on("user_left", ({ username }) => {
           toast.info(username + " left")
-          delete cursors.value[username];
+          delete userCursors.value[username];
         })
 
       } else if (socket.value) {
         socket.value.disconnect();
         socket.value = null;
-        cursors.value = {};
+        userCursors.value = {};
       }
     };
+
+    watch(() => route.params.pictureId, async (newPictureId, oldPictureId) => {
+      if (newPictureId === oldPictureId) return
+
+      if (socket.value) {
+        socket.value.disconnect();
+        socket.value = null;
+      }
+      await fetchPictureData();
+      await connectSocket();
+    }, { immediate: true });
+
+    onMounted(async () => {
+      await fetchPictureData();
+      await connectSocket()
+    });
+
+    onBeforeUnmount(() => {
+      if (socket.value) {
+        socket.value.disconnect();
+        socket.value = null;
+      }
+      userCursors.value = {};
+    });
 
     return {
       pixels,
@@ -319,8 +326,7 @@ export default defineComponent({
       closeSaveDialog,
       pictureName,
       isDialogOpen,
-      cursors,
-      username,
+      userCursors,
       trackCursorPosition
     };
   }
