@@ -1,5 +1,13 @@
 <template>
-  <div class="drawing-app">
+  <div class="drawing-app" @mousemove="trackCursorPosition">
+    <div v-for="(cursor, username) in cursors" :key="username" class="cursor" :style="{
+      top: `${cursor.y}px`,
+      left: `${cursor.x}px`,
+    }">
+      <i class="mdi mdi-cursor-default cursor-icon"></i>
+      <div class="cursor-username">{{ username }}</div>
+    </div>
+
     <Tools @colorSelected="updateColor" @toolSelected="updateTool" />
     <div>
       <div class="horizontalTools">
@@ -26,7 +34,6 @@
           }" @mouseover="draw(rowIndex, colIndex)" @click="clickPixel(rowIndex, colIndex)"></div>
         </div>
       </div>
-
     </div>
     <div v-if="isDialogOpen" class="dialog-overlay">
       <div class="dialog">
@@ -46,8 +53,9 @@ import { computed, defineComponent, onMounted, ref, watch, type PropType } from 
 import { usePictureStore } from "@/stores/pictureStore";
 import { useToast } from "vue-toastification";
 import Tools from "@/components/Tools.vue";
-import type { PictureDto } from "@/types/pictures";
 import { useRoute } from "vue-router";
+import { io, Socket } from "socket.io-client"
+import { useAuthStore } from "@/stores/authStore";
 
 export default defineComponent({
   components: {
@@ -56,7 +64,13 @@ export default defineComponent({
   setup() {
     const toast = useToast()
 
+    const SOCKET_URL = "http://localhost:3000";
+    const socket = ref<Socket | null>(null);
+    const cursors = ref<Record<string, { x: number; y: number }>>({});
+    const username = ref("");
+
     const pictureStore = usePictureStore();
+    const authStore = useAuthStore();
 
     const CANVAS_SIZE = 12;
     const CANVAS_MIN_SIZE = 1;
@@ -101,10 +115,10 @@ export default defineComponent({
     };
 
     const clickPixel = (row: number, col: number) => {
-      if (tool.value === "brush") {
-        pixels.value[row][col].color = color.value;
-      } else if (tool.value === "eraser") {
-        pixels.value[row][col].color = "#FFFFFF";
+      const tempColor = tool.value === "brush" ? color.value : "#FFFFFF"
+      pixels.value[row][col].color = tempColor;
+      if (socket.value != null) {
+        socket.value.emit("draw", { row, col, color: color.value, userId: "user123" });
       }
     };
 
@@ -118,6 +132,10 @@ export default defineComponent({
           pixels.value[row]?.[col] || { color: "#FFFFFF" }
         )
       );
+
+      if (socket.value != null) {
+        socket.value.emit("increase_size", {});
+      }
     };
 
     const decreaseCanvasSize = () => {
@@ -128,6 +146,20 @@ export default defineComponent({
       pixels.value = pixels.value
         .slice(0, newSize)
         .map(row => row.slice(0, newSize));
+
+      if (socket.value != null) {
+        socket.value.emit("decrease_size", {});
+      }
+    };
+
+    const trackCursorPosition = (event: MouseEvent) => {
+      updateCursor(event.pageX, event.pageY);
+    };
+
+    const updateCursor = (x: number, y: number) => {
+      if (socket.value) {
+        socket.value.emit("updateCursor", { pictureId, username: username.value, x, y });
+      }
     };
 
     const pixelsToPictureData = (): string[][] => pixels.value.map(row => row.map(pixel => pixel.color));
@@ -195,7 +227,56 @@ export default defineComponent({
 
     onMounted(() => {
       fetchPictureData();
+      connectSocket()
     });
+
+    const connectSocket = async () => {
+      if (pictureId && authStore.token !== "") {
+        socket.value = io(SOCKET_URL, { transports: ["websocket"] });
+
+        socket.value.emit("join", { pictureId: pictureId, username: username.value, canvas: pixels.value });
+
+        socket.value.on("canvas_state", ({ canvas }) => {
+          pixels.value = canvas.map((row: string[]) => row.map((color: string) => ({ color })));
+        });
+
+        socket.value.on("draw", ({ row, col, color }) => {
+          pixels.value[row][col].color = color;
+        });
+
+        socket.value.on("increase_size", () => {
+          const newSize = pixels.value.length + 1;
+          if (newSize > CANVAS_MAX_SIZE) return;
+
+          pixels.value = Array.from({ length: newSize }, (_, row) =>
+            Array.from({ length: newSize }, (_, col) =>
+              pixels.value[row]?.[col] || { color: "#FFFFFF" }
+            )
+          );
+        });
+
+        socket.value.on("decrease_size", () => {
+          const newSize = pixels.value.length - 1;
+          if (newSize < CANVAS_MIN_SIZE) return;
+
+          pixels.value = pixels.value
+            .slice(0, newSize)
+            .map(row => row.slice(0, newSize));
+        });
+
+        socket.value.on("update_cursor", ({ username, x, y }) => {
+          cursors.value[username] = { x, y };
+        });
+
+        socket.value.on("disconnect", (username) => {
+          delete cursors.value[username];
+        });
+      } else if (socket.value) {
+        socket.value.disconnect();
+        socket.value = null;
+        cursors.value = {};
+      }
+    };
 
     return {
       pixels,
@@ -215,6 +296,9 @@ export default defineComponent({
       closeSaveDialog,
       pictureName,
       isDialogOpen,
+      cursors,
+      username,
+      trackCursorPosition
     };
   }
 });
@@ -382,5 +466,25 @@ export default defineComponent({
   100% {
     opacity: 1;
   }
+}
+
+.cursor {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+.cursor-icon {
+  font-size: 16px;
+  color: black;
+}
+
+.cursor-username {
+  font-size: 14px;
+  color: red;
+  margin-top: 2px;
 }
 </style>
